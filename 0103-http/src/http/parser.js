@@ -20,6 +20,7 @@ function parseRequest(rawRequest) {
     path: '',
     version: '',
     headers: {},
+    cookies: {},
     body: ''
   };
 
@@ -48,6 +49,17 @@ function parseRequest(rawRequest) {
     const key = line.substring(0, colonIndex).trim().toLowerCase();
     const value = line.substring(colonIndex + 1).trim();
     request.headers[key] = value;
+  }
+
+  // 쿠키 파싱 (Cookie: name=value; name2=value2)
+  if (request.headers['cookie']) {
+    const cookiePairs = request.headers['cookie'].split(';');
+    for (const pair of cookiePairs) {
+      const [name, ...valueParts] = pair.trim().split('=');
+      if (name) {
+        request.cookies[name.trim()] = valueParts.join('=').trim();
+      }
+    }
   }
 
   return request;

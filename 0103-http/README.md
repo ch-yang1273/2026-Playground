@@ -8,7 +8,9 @@
 npm start
 ```
 
-## 테스트 (npm run)
+## 테스트
+
+### npm run
 
 ```bash
 npm run curl:home    # GET / - JSON 응답
@@ -19,15 +21,20 @@ npm run curl:404     # 404 에러
 npm run curl:http11  # HTTP/1.1 요청
 ```
 
-## 테스트 (curl 직접)
+### cookie
+
+```bash
+npm run curl:cookie:set  # 쿠키 설정 (Set-Cookie 헤더)
+npm run curl:cookie:get  # 쿠키 전송 (Cookie 헤더)
+```
+
+## curl 테스트
 
 ```bash
 # HTTP/1.0
 curl -v --http1.0 http://localhost:8080/
-
 # HTTP/1.1
 curl -v --http1.1 http://localhost:8080/
-
 # POST 요청
 curl -v --http1.0 -X POST -d "name=test" http://localhost:8080/echo
 ```

@@ -44,6 +44,22 @@ router.post('/echo', (req, res, socket) => {
   }).send(socket);
 });
 
+// 쿠키 설정
+router.get('/cookie/set', (req, res, socket) => {
+  res
+    .header('Set-Cookie', 'session=abc123; Path=/')
+    .json({ message: '쿠키가 설정되었습니다', cookie: 'session=abc123' })
+    .send(socket);
+});
+
+// 쿠키 읽기
+router.get('/cookie/get', (req, res, socket) => {
+  res.json({
+    message: '수신된 쿠키',
+    cookies: req.cookies
+  }).send(socket);
+});
+
 // ===== 서버 시작 =====
 
 const server = net.createServer((socket) => {
