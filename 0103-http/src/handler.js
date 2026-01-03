@@ -38,35 +38,35 @@ function del(path, handler) {
  * @param {net.Socket} socket - 소켓
  */
 function handleRequest(request, socket) {
-  const { method, path } = request;
+  const { method, path, version } = request;
 
   // 해당 메서드의 라우트 찾기
   const methodRoutes = routes[method];
   if (!methodRoutes) {
-    return send405(socket, method);
+    return send405(socket, method, version);
   }
 
   // 정확한 경로 매칭
   const handler = methodRoutes[path];
   if (handler) {
     try {
-      handler(request, createResponse(200), socket);
+      handler(request, createResponse(200, version), socket);
     } catch (err) {
       console.error('핸들러 에러:', err);
-      send500(socket, err.message);
+      send500(socket, err.message, version);
     }
     return;
   }
 
   // 404 Not Found
-  send404(socket, path);
+  send404(socket, path, version);
 }
 
 /**
  * 404 응답
  */
-function send404(socket, path) {
-  createResponse(404)
+function send404(socket, path, version) {
+  createResponse(404, version)
     .json({
       error: 'Not Found',
       message: `경로를 찾을 수 없습니다: ${path}`
@@ -77,8 +77,8 @@ function send404(socket, path) {
 /**
  * 405 응답
  */
-function send405(socket, method) {
-  createResponse(405)
+function send405(socket, method, version) {
+  createResponse(405, version)
     .json({
       error: 'Method Not Allowed',
       message: `지원하지 않는 메서드입니다: ${method}`
@@ -89,8 +89,8 @@ function send405(socket, method) {
 /**
  * 500 응답
  */
-function send500(socket, message) {
-  createResponse(500)
+function send500(socket, message, version) {
+  createResponse(500, version)
     .json({
       error: 'Internal Server Error',
       message: message

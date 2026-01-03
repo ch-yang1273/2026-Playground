@@ -1,10 +1,16 @@
 {
   "name": "http-server",
   "version": "1.0.0",
-  "description": "HTTP/1.0 학습용 서버 (순수 Node.js)",
+  "description": "HTTP 학습용 서버 (순수 Node.js)",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "curl:home": "curl -v --http1.0 http://localhost:8080/",
+    "curl:hello": "curl -v --http1.0 http://localhost:8080/hello",
+    "curl:echo": "curl -v --http1.0 http://localhost:8080/echo",
+    "curl:post": "curl -v --http1.0 -X POST -d 'name=test' http://localhost:8080/echo",
+    "curl:404": "curl -v --http1.0 http://localhost:8080/notfound",
+    "curl:http11": "curl -v --http1.1 http://localhost:8080/"
   },
   "keywords": ["http", "learning"],
   "license": "MIT"

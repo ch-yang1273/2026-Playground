@@ -23,11 +23,12 @@ const STATUS_CODES = {
 /**
  * HTTP 응답 객체 생성
  * @param {number} statusCode - HTTP 상태 코드
+ * @param {string} version - HTTP 버전 (요청 버전에 맞춤)
  * @returns {object} 응답 빌더 객체
  */
-function createResponse(statusCode = 200) {
+function createResponse(statusCode = 200, version = 'HTTP/1.0') {
   const response = {
-    version: 'HTTP/1.0',
+    version: version,
     statusCode: statusCode,
     statusMessage: STATUS_CODES[statusCode] || 'Unknown',
     headers: {},

@@ -1,6 +1,6 @@
 # HTTP 학습용 서버
 
-순수 Node.js `net` 모듈로 구현한 HTTP/1.0 서버
+순수 Node.js `net` 모듈로 구현한 HTTP 서버 (1.0 / 1.1 지원)
 
 ## 실행
 
@@ -8,23 +8,28 @@
 npm start
 ```
 
-## 테스트 (curl)
+## 테스트 (npm run)
 
 ```bash
-# 홈 - JSON 응답
+npm run curl:home    # GET / - JSON 응답
+npm run curl:hello   # GET /hello - 텍스트 응답
+npm run curl:echo    # GET /echo - 요청 정보 반환
+npm run curl:post    # POST /echo - 바디 포함
+npm run curl:404     # 404 에러
+npm run curl:http11  # HTTP/1.1 요청
+```
+
+## 테스트 (curl 직접)
+
+```bash
+# HTTP/1.0
 curl -v --http1.0 http://localhost:8080/
 
-# Hello - 텍스트 응답
-curl -v --http1.0 http://localhost:8080/hello
+# HTTP/1.1
+curl -v --http1.1 http://localhost:8080/
 
-# Echo - GET 요청 정보 반환
-curl -v --http1.0 http://localhost:8080/echo
-
-# Echo - POST 요청 + 바디
+# POST 요청
 curl -v --http1.0 -X POST -d "name=test" http://localhost:8080/echo
-
-# 404 에러
-curl -v --http1.0 http://localhost:8080/notfound
 ```
 
 ## 프로젝트 구조
