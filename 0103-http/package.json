@@ -1,0 +1,11 @@
+{
+  "name": "http-server",
+  "version": "1.0.0",
+  "description": "HTTP/1.0 학습용 서버 (순수 Node.js)",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "keywords": ["http", "learning"],
+  "license": "MIT"
+}

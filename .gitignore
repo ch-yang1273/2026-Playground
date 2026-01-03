@@ -1,0 +1,13 @@
+*.zip
+.idea/
+.claude/
+
+### Sass ###
+.sass-cache/
+*.css.map
+*.sass.map
+*.scss.map
+
+### npm ###
+node_modules/
+.DS_Store
