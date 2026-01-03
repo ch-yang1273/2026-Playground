@@ -28,6 +28,22 @@ npm run curl:cookie:set  # 쿠키 설정 (Set-Cookie 헤더)
 npm run curl:cookie:get  # 쿠키 전송 (Cookie 헤더)
 ```
 
+### keep-alive
+
+```bash
+# 단일 요청 + 연결 과정 trace
+npm run curl:keepalive
+# 두 요청을 같은 연결로 (trace 출력)
+npm run test:keepalive
+```
+
+Keep-Alive 동작 확인 (--trace-ascii로 클라이언트에서 확인):
+```
+== Info: Re-using existing connection with host localhost  ← 연결 재사용!
+=> Send header, ...
+<= Recv header, ...
+```
+
 ## curl 테스트
 
 ```bash

@@ -24,16 +24,28 @@ const STATUS_CODES = {
  * HTTP 응답 객체 생성
  * @param {number} statusCode - HTTP 상태 코드
  * @param {string} version - HTTP 버전 (요청 버전에 맞춤)
+ * @param {object} options - 옵션 (keepAlive, requestHeaders)
  * @returns {object} 응답 빌더 객체
  */
-function createResponse(statusCode = 200, version = 'HTTP/1.0') {
+function createResponse(statusCode = 200, version = 'HTTP/1.0', options = {}) {
   const response = {
     version: version,
     statusCode: statusCode,
     statusMessage: STATUS_CODES[statusCode] || 'Unknown',
     headers: {},
-    body: ''
+    body: '',
+    keepAlive: false
   };
+
+  // Keep-Alive 결정
+  // HTTP/1.1: 기본 keep-alive (Connection: close가 아니면 유지)
+  // HTTP/1.0: 기본 close (Connection: keep-alive면 유지)
+  const reqConnection = (options.requestHeaders?.['connection'] || '').toLowerCase();
+  if (version === 'HTTP/1.1') {
+    response.keepAlive = reqConnection !== 'close';
+  } else {
+    response.keepAlive = reqConnection === 'keep-alive';
+  }
 
   const builder = {
     /**
@@ -99,6 +111,11 @@ function createResponse(statusCode = 200, version = 'HTTP/1.0') {
       // Date 헤더 추가
       response.headers['Date'] = new Date().toUTCString();
 
+      // Connection 헤더 설정
+      if (!response.headers['Connection']) {
+        response.headers['Connection'] = response.keepAlive ? 'keep-alive' : 'close';
+      }
+
       // 상태 라인
       let result = `${response.version} ${response.statusCode} ${response.statusMessage}\r\n`;
 
@@ -120,8 +137,18 @@ function createResponse(statusCode = 200, version = 'HTTP/1.0') {
     send(socket) {
       const data = builder.build();
       socket.write(data);
-      socket.end();
+      // Keep-Alive가 아니면 연결 종료
+      if (!response.keepAlive) {
+        socket.end();
+      }
       return builder;
+    },
+
+    /**
+     * Keep-Alive 상태 반환
+     */
+    isKeepAlive() {
+      return response.keepAlive;
     }
   };
 

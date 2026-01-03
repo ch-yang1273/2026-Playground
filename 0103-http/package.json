@@ -12,7 +12,9 @@
     "curl:404": "curl -v --http1.0 http://localhost:8080/notfound",
     "curl:http11": "curl -v --http1.1 http://localhost:8080/",
     "curl:cookie:set": "curl -v --http1.0 http://localhost:8080/cookie/set",
-    "curl:cookie:get": "curl -v --http1.0 -b 'session=abc123' http://localhost:8080/cookie/get"
+    "curl:cookie:get": "curl -v --http1.0 -b 'session=abc123' http://localhost:8080/cookie/get",
+    "curl:keepalive": "curl --trace-ascii - --http1.1 http://localhost:8080/",
+    "test:keepalive": "curl --trace-ascii - --http1.1 http://localhost:8080/ http://localhost:8080/hello 2>&1 | GREP_COLORS='ms=01;32' grep --color=always -E 'Re-using|Connected|left intact|$'"
   },
   "keywords": ["http", "learning"],
   "license": "MIT"

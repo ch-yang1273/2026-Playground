@@ -9,12 +9,16 @@ const PORT = 8080;
 // 홈
 router.get('/', (req, res, socket) => {
   res.json({
-    message: 'HTTP/1.0 서버에 오신 것을 환영합니다!',
+    message: 'HTTP 서버에 오신 것을 환영합니다!',
+    version: req.version,
+    keepAlive: res.isKeepAlive(),
     endpoints: [
       'GET /',
       'GET /hello',
       'GET /echo',
-      'POST /echo'
+      'POST /echo',
+      'GET /cookie/set',
+      'GET /cookie/get'
     ]
   }).send(socket);
 });
@@ -79,6 +83,10 @@ const server = net.createServer((socket) => {
 
     // 라우터로 요청 처리
     router.handleRequest(request, socket);
+  });
+
+  socket.on('close', () => {
+    console.log('클라이언트 연결 종료');
   });
 
   socket.on('error', (err) => {
