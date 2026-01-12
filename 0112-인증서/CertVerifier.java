@@ -1,13 +1,18 @@
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import java.security.KeyStore;
 import java.security.MessageDigest;
 import java.security.PublicKey;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
+
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Enumeration;
 import java.util.List;
 
 public class CertVerifier {
@@ -68,9 +73,55 @@ public class CertVerifier {
             }
         }
 
+        // 루트 CA 신뢰 검증
+        System.out.println("=== 루트 CA 신뢰 검증 ===\n");
+        X509Certificate rootCert = certs.get(certs.size() - 1);
+        verifyTrustedCA(rootCert);
+
         System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         System.out.println("검증 완료");
         System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    }
+
+    private static void verifyTrustedCA(X509Certificate rootCert) {
+        String rootCN = getCommonName(rootCert.getSubjectX500Principal().getName());
+        System.out.println("루트 CA: " + rootCN);
+        System.out.println("Trust Store 경로: " + System.getProperty("java.home") + "/lib/security/cacerts\n");
+
+        try {
+            // Java 기본 Trust Store 로드
+            String cacertsPath = System.getProperty("java.home") + "/lib/security/cacerts";
+            KeyStore trustStore = KeyStore.getInstance("JKS");
+            trustStore.load(new FileInputStream(cacertsPath), "changeit".toCharArray());
+
+            // Trust Store에서 루트 CA 찾기
+            boolean found = false;
+            String foundAlias = null;
+
+            Enumeration<String> aliases = trustStore.aliases();
+            while (aliases.hasMoreElements()) {
+                String alias = aliases.nextElement();
+                if (trustStore.isCertificateEntry(alias)) {
+                    X509Certificate trustedCert = (X509Certificate) trustStore.getCertificate(alias);
+                    if (trustedCert.getSubjectX500Principal().equals(rootCert.getSubjectX500Principal())) {
+                        found = true;
+                        foundAlias = alias;
+                        break;
+                    }
+                }
+            }
+
+            if (found) {
+                System.out.println(">> 결과: 신뢰할 수 있음");
+                System.out.println(">> Trust Store alias: " + foundAlias);
+            } else {
+                System.out.println(">> 결과: Trust Store에서 찾을 수 없음");
+                System.out.println(">> 이 루트 CA는 시스템에서 신뢰하지 않습니다.");
+            }
+        } catch (Exception e) {
+            System.out.println(">> Trust Store 로드 실패: " + e.getMessage());
+        }
+        System.out.println();
     }
 
     private static void verifySignature(X509Certificate cert, PublicKey publicKey, String signerName) {
