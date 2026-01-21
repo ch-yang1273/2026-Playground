@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.sudoku.validator.SudokuBoardValidatorTest" tests="18" skipped="0" failures="0" errors="0" timestamp="2026-01-21T17:26:00" hostname="yangchanhong-ui-MacBookAir.local" time="0.014">
+  <properties/>
+  <testcase name="should_returnFalse_when_cellValueIsInvalid()" classname="com.sudoku.validator.SudokuBoardValidatorTest" time="0.005"/>
+  <testcase name="should_returnTrue_when_validCell()" classname="com.sudoku.validator.SudokuBoardValidatorTest" time="0.001"/>
+  <testcase name="should_returnFalse_when_hasDuplicateInBox()" classname="com.sudoku.validator.SudokuBoardValidatorTest" time="0.001"/>
+  <testcase name="should_returnFalse_when_hasDuplicateInRow()" classname="com.sudoku.validator.SudokuBoardValidatorTest" time="0.001"/>
+  <testcase name="should_returnFalse_when_cellIndexIsInvalid()" classname="com.sudoku.validator.SudokuBoardValidatorTest" time="0.0"/>
+  <testcase name="should_returnEmptyArray_when_noDuplicates()" classname="com.sudoku.validator.SudokuBoardValidatorTest" time="0.0"/>
+  <testcase name="should_returnTrue_when_boardIsEmpty()" classname="com.sudoku.validator.SudokuBoardValidatorTest" time="0.0"/>
+  <testcase name="should_returnTrue_when_validCompleteBoard()" classname="com.sudoku.validator.SudokuBoardValidatorTest" time="0.0"/>
+  <testcase name="should_returnFalse_when_invalidCellDueToRowDuplicate()" classname="com.sudoku.validator.SudokuBoardValidatorTest" time="0.0"/>
+  <testcase name="should_returnTrue_when_cellIsEmpty()" classname="com.sudoku.validator.SudokuBoardValidatorTest" time="0.0"/>
+  <testcase name="should_returnTrue_when_boardIsCompleteAndValid()" classname="com.sudoku.validator.SudokuBoardValidatorTest" time="0.0"/>
+  <testcase name="should_returnFalse_when_boardIsNull()" classname="com.sudoku.validator.SudokuBoardValidatorTest" time="0.0"/>
+  <testcase name="should_returnFalse_when_boardIsIncomplete()" classname="com.sudoku.validator.SudokuBoardValidatorTest" time="0.0"/>
+  <testcase name="should_findDuplicatesInBoard()" classname="com.sudoku.validator.SudokuBoardValidatorTest" time="0.0"/>
+  <testcase name="should_returnFalse_when_cellIndexExceedsBoardSize()" classname="com.sudoku.validator.SudokuBoardValidatorTest" time="0.0"/>
+  <testcase name="should_returnFalse_when_hasDuplicateInColumn()" classname="com.sudoku.validator.SudokuBoardValidatorTest" time="0.001"/>
+  <testcase name="should_returnFalse_when_completeBoardHasDuplicates()" classname="com.sudoku.validator.SudokuBoardValidatorTest" time="0.0"/>
+  <testcase name="should_returnFalse_when_boardSizeIsInvalid()" classname="com.sudoku.validator.SudokuBoardValidatorTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

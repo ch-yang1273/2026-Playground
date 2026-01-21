@@ -37,10 +37,10 @@
 **TDD Approach**: Write tests first, then implement
 
 ### 2.1 Board Validation
-- [ ] `isValidBoard()` - Validate entire board
-- [ ] `isValidCell()` - Validate specific cell
-- [ ] `findDuplicates()` - Find duplicates in row/col/box
-- [ ] `isComplete()` - Check if board is complete
+- [x] `isValidBoard()` - Validate entire board
+- [x] `isValidCell()` - Validate specific cell
+- [x] `findDuplicates()` - Find duplicates in row/col/box
+- [x] `isComplete()` - Check if board is complete
 
 ### 2.2 Solving Algorithms (for difficulty classification)
 - [ ] `solveNakedSingle()` - Naked Single technique
