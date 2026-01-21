@@ -28,12 +28,11 @@ npm run typecheck        # Run TypeScript check
 
 ### Backend (Spring Boot)
 ```bash
-./mvnw clean install     # Build project
-./mvnw test              # Run all JUnit tests
-./mvnw test -Dtest=<TestClass>  # Run single test class
-./mvnw test -Dtest=<TestClass>#<testMethod>  # Run single test method
-./mvnw spring-boot:run   # Start dev server
-./mvnw checkstyle:check  # Run style checks
+./gradlew clean build    # Build project
+./gradlew test           # Run all JUnit tests
+./gradlew test --tests <TestClass>  # Run single test class
+./gradlew bootRun        # Start dev server
+./gradlew checkstyleMain # Run style checks
 ```
 
 ### E2E (Playwright)
@@ -105,3 +104,16 @@ npx playwright show-report  # View test report
 - `test:` Add/update tests
 - `docs:` Documentation
 - `chore:` Build/config changes
+
+## Workflow
+
+### Task Execution Pattern
+1. Complete one checkbox item from PLAN.md
+2. Update the checkbox `[ ]` → `[x]` in PLAN.md
+3. Return and select next task
+4. Repeat until all checkboxes complete
+
+### Session Continuity
+- Track progress in PLAN.md (persists between sessions)
+- Use git commits for version history (optional)
+- Each Phase completion can be marked with `[IN PROGRESS]` → `[COMPLETED]`

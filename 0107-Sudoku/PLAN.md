@@ -15,16 +15,16 @@
 ## 📐 Phase 1: Project Initial Setup
 
 ### Frontend (Vue.js)
-- [ ] Create Vue.js + TypeScript project
-- [ ] Setup Vitest for testing
-- [ ] Configure ESLint & Prettier
-- [ ] Install and setup Pinia for state management
+- [x] Create Vue.js + TypeScript project
+- [x] Setup Vitest for testing
+- [x] Configure ESLint & Prettier
+- [x] Install and setup Pinia for state management
 
 ### Backend (Spring Boot)
-- [ ] Create Spring Boot project
-- [ ] Setup JUnit & Checkstyle
-- [ ] Configure MariaDB connection
-- [ ] Setup JPA/Hibernate
+- [x] Create Spring Boot project
+- [x] Setup JUnit & Checkstyle
+- [x] Configure MariaDB connection
+- [x] Setup JPA/Hibernate
 
 ### E2E (Playwright)
 - [ ] Install Playwright
