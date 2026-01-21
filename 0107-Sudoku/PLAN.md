@@ -43,7 +43,7 @@
 - [x] `isComplete()` - Check if board is complete
 
 ### 2.2 Solving Algorithms (for difficulty classification)
-- [ ] `solveNakedSingle()` - Naked Single technique
+- [x] `solveNakedSingle()` - Naked Single technique
 - [ ] `solveHiddenSingle()` - Hidden Single technique
 - [ ] `solveNakedPair()` - Naked Pair technique
 - [ ] `solvePointing()` - Pointing technique
