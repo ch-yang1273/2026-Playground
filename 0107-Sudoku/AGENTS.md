@@ -110,10 +110,30 @@ npx playwright show-report  # View test report
 ### Task Execution Pattern
 1. Complete one checkbox item from PLAN.md
 2. Update the checkbox `[ ]` → `[x]` in PLAN.md
-3. Return and select next task
-4. Repeat until all checkboxes complete
+3. **Commit changes** (one commit per completed task)
+4. Return and select next task
+5. Repeat until all checkboxes complete
+
+### Commit Guidelines
+
+**Commit After Each Task**:
+- Always commit after completing one checkbox item from PLAN.md
+- Small, focused commits are preferred over large ones
+- If a task creates multiple files, commit them together
+- If a task involves multiple logical steps, split into multiple commits
+
+**Commit Message Format**:
+- Use conventional commit prefixes: `feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`
+- Describe what was done and why
+- Example: `feat: implement isValidBoard function for Sudoku validation`
+
+**When to Commit**:
+- After completing a single checkbox from PLAN.md
+- After passing tests for a new feature
+- After finishing a logical unit of work
+- Before switching to a different task
 
 ### Session Continuity
 - Track progress in PLAN.md (persists between sessions)
-- Use git commits for version history (optional)
+- Use git commits for version history (required)
 - Each Phase completion can be marked with `[IN PROGRESS]` → `[COMPLETED]`
