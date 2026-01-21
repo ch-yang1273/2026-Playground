@@ -27,8 +27,8 @@
 - [x] Setup JPA/Hibernate
 
 ### E2E (Playwright)
-- [ ] Install Playwright
-- [ ] Configure test environment
+- [x] Install Playwright
+- [x] Configure test environment
 
 ---
 
