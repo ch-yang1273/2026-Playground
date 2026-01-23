@@ -26,6 +26,95 @@ public class SudokuSolver {
     return madeProgress;
   }
 
+  public static boolean solveNakedPair(int[] board) {
+    if (board == null || board.length != BOARD_SIZE * BOARD_SIZE) {
+      return false;
+    }
+
+    for (int unit = 0; unit < BOARD_SIZE; unit++) {
+      if (findAndApplyNakedPairInRow(board, unit)) return true;
+      if (findAndApplyNakedPairInCol(board, unit)) return true;
+      if (findAndApplyNakedPairInBox(board, unit)) return true;
+    }
+
+    return false;
+  }
+
+  private static boolean findAndApplyNakedPairInRow(int[] board, int row) {
+    int start = row * BOARD_SIZE;
+    int[] indices = new int[BOARD_SIZE];
+    int[] candidates = new int[BOARD_SIZE];
+    int emptyCount = 0;
+
+    for (int i = start; i < start + BOARD_SIZE; i++) {
+      if (board[i] == 0) {
+        indices[emptyCount] = i;
+        candidates[emptyCount] = getCandidates(board, i);
+        emptyCount++;
+      }
+    }
+
+    return findAndApplyNakedPair(board, indices, candidates, emptyCount);
+  }
+
+  private static boolean findAndApplyNakedPairInCol(int[] board, int col) {
+    int[] indices = new int[BOARD_SIZE];
+    int[] candidates = new int[BOARD_SIZE];
+    int emptyCount = 0;
+
+    for (int i = col; i < board.length; i += BOARD_SIZE) {
+      if (board[i] == 0) {
+        indices[emptyCount] = i;
+        candidates[emptyCount] = getCandidates(board, i);
+        emptyCount++;
+      }
+    }
+
+    return findAndApplyNakedPair(board, indices, candidates, emptyCount);
+  }
+
+  private static boolean findAndApplyNakedPairInBox(int[] board, int box) {
+    int boxStartRow = (box / 3) * BOX_SIZE;
+    int boxStartCol = (box % 3) * BOX_SIZE;
+    int[] indices = new int[BOARD_SIZE];
+    int[] candidates = new int[BOARD_SIZE];
+    int emptyCount = 0;
+
+    for (int r = boxStartRow; r < boxStartRow + BOX_SIZE; r++) {
+      for (int c = boxStartCol; c < boxStartCol + BOX_SIZE; c++) {
+        int i = r * BOARD_SIZE + c;
+        if (board[i] == 0) {
+          indices[emptyCount] = i;
+          candidates[emptyCount] = getCandidates(board, i);
+          emptyCount++;
+        }
+      }
+    }
+
+    return findAndApplyNakedPair(board, indices, candidates, emptyCount);
+  }
+
+  private static boolean findAndApplyNakedPair(int[] board, int[] indices, int[] candidates, int count) {
+    for (int i = 0; i < count; i++) {
+      if (Integer.bitCount(candidates[i]) != 2) continue;
+
+      for (int j = i + 1; j < count; j++) {
+        if (candidates[i] != candidates[j]) continue;
+
+        int pairMask = candidates[i];
+        for (int k = 0; k < count; k++) {
+          if (k == i || k == j) continue;
+
+          if ((candidates[k] & pairMask) != 0 && Integer.bitCount(candidates[k] & ~pairMask) == 1) {
+            board[indices[k]] = Integer.numberOfTrailingZeros(candidates[k] & ~pairMask);
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
   public static boolean solveHiddenSingle(int[] board) {
     if (board == null || board.length != BOARD_SIZE * BOARD_SIZE) {
       return false;

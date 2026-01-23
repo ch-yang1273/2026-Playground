@@ -284,4 +284,184 @@ class SudokuSolverTest {
 
     return board;
   }
+
+  // ==================== Naked Pair Tests ====================
+
+  @Test
+  void should_returnFalse_when_boardIsNull_forNakedPair() {
+    boolean result = SudokuSolver.solveNakedPair(null);
+    assertFalse(result);
+  }
+
+  @Test
+  void should_returnFalse_when_boardSizeIsInvalid_forNakedPair() {
+    boolean result = SudokuSolver.solveNakedPair(new int[80]);
+    assertFalse(result);
+  }
+
+  @Test
+  void should_returnFalse_when_noEmptyCells_forNakedPair() {
+    int[] board = createValidCompleteBoard();
+    boolean result = SudokuSolver.solveNakedPair(board);
+    assertFalse(result);
+  }
+
+  @Test
+  void should_findNakedPairInRowAndSolve() {
+    // Naked Pair: 행에서 두 셀이 동일한 2개 후보만 가질 때
+    // 다른 셀에서 해당 후보를 제거하면 Naked Single이 발생
+    int[] board = createBoardWithNakedPairInRow();
+    boolean result = SudokuSolver.solveNakedPair(board);
+    assertTrue(result);
+  }
+
+  @Test
+  void should_findNakedPairInColAndSolve() {
+    int[] board = createBoardWithNakedPairInCol();
+    boolean result = SudokuSolver.solveNakedPair(board);
+    assertTrue(result);
+  }
+
+  @Test
+  void should_findNakedPairInBoxAndSolve() {
+    int[] board = createBoardWithNakedPairInBox();
+    boolean result = SudokuSolver.solveNakedPair(board);
+    assertTrue(result);
+  }
+
+  @Test
+  void should_returnFalse_when_noNakedPair() {
+    int[] board = createEmptyBoard();
+    boolean result = SudokuSolver.solveNakedPair(board);
+    assertFalse(result);
+  }
+
+  @Test
+  void should_notFindNakedPair_when_cellsHaveDifferentCandidates() {
+    // 두 셀의 후보가 다르면 Naked Pair가 아님
+    int[] board = createBoardWithDifferentCandidatePairs();
+    boolean result = SudokuSolver.solveNakedPair(board);
+    assertFalse(result);
+  }
+
+  private int[] createBoardWithNakedPairInRow() {
+    // 행 0: index 0,1은 후보 {1,2}, index 2는 후보 {1,2,3}
+    // Naked Pair {1,2}로 index 2에서 1,2 제거 → 3만 남음
+    int[] board = createEmptyBoard();
+
+    // 행 0: [_, _, _, 4, 5, 6, 7, 8, 9]
+    board[3] = 4;
+    board[4] = 5;
+    board[5] = 6;
+    board[6] = 7;
+    board[7] = 8;
+    board[8] = 9;
+
+    // index 0 (row 0, col 0, box 0) 후보를 {1,2}로 제한:
+    // - col 0에 3 배치 (box 0 밖에서)
+    board[27] = 3; // row 3, col 0 (box 3)
+
+    // index 1 (row 0, col 1, box 0) 후보를 {1,2}로 제한:
+    // - col 1에 3 배치 (box 0 밖에서)
+    board[28] = 3; // row 3, col 1 (box 3)
+
+    // index 2 (row 0, col 2, box 0) 후보가 {1,2,3}이 되려면:
+    // - col 2에는 3이 없어야 함 ✓
+    // - box 0에는 3이 없어야 함 ✓
+
+    // Verification:
+    // index 0: row={4-9}, col={3}, box={} → candidates={1,2}
+    // index 1: row={4-9}, col={3}, box={} → candidates={1,2}
+    // index 2: row={4-9}, col={}, box={} → candidates={1,2,3}
+
+    return board;
+  }
+
+  private int[] createBoardWithNakedPairInCol() {
+    // 열 0에서 index 0,9는 후보 {1,2}, index 18은 후보 {1,2,3}
+    int[] board = createEmptyBoard();
+
+    // 열 0: 대부분 채우고 3칸만 빈칸 (0, 9, 18)
+    board[27] = 4;
+    board[36] = 5;
+    board[45] = 6;
+    board[54] = 7;
+    board[63] = 8;
+    board[72] = 9;
+
+    // index 0 (row 0, col 0, box 0) 후보 {1,2}: row 0에 3 배치 (box 0 밖)
+    board[5] = 3; // row 0, col 5 (box 1)
+
+    // index 9 (row 1, col 0, box 0) 후보 {1,2}: row 1에 3 배치 (box 0 밖)
+    board[14] = 3; // row 1, col 5 (box 1)
+
+    // index 18 (row 2, col 0, box 0) 후보 {1,2,3}:
+    // - row 2에 3이 없어야 함 ✓
+    // - box 0에 3이 없어야 함 ✓ (3은 box 1에 있음)
+
+    // Verification:
+    // index 0: row={3}, col={4-9}, box={} → candidates={1,2}
+    // index 9: row={3}, col={4-9}, box={} → candidates={1,2}
+    // index 18: row={}, col={4-9}, box={} → candidates={1,2,3}
+
+    return board;
+  }
+
+  private int[] createBoardWithNakedPairInBox() {
+    // 박스 0에서 index 0,1은 후보 {1,2}, index 2는 후보 {1,2,3}
+    int[] board = createEmptyBoard();
+
+    // 박스 0에서 3칸만 빈칸 (index 0, 1, 2 = row 0, col 0,1,2)
+    board[9] = 4;  // (1,0)
+    board[10] = 5; // (1,1)
+    board[11] = 6; // (1,2)
+    board[18] = 7; // (2,0)
+    board[19] = 8; // (2,1)
+    board[20] = 9; // (2,2)
+
+    // 행 0의 나머지 채움 (4-9)
+    board[3] = 4;
+    board[4] = 5;
+    board[5] = 6;
+    board[6] = 7;
+    board[7] = 8;
+    board[8] = 9;
+
+    // index 0 (row 0, col 0) 후보 {1,2}: col 0에 3 배치 (box 0 밖)
+    board[27] = 3; // row 3, col 0 (box 3)
+
+    // index 1 (row 0, col 1) 후보 {1,2}: col 1에 3 배치 (box 0 밖)
+    board[28] = 3; // row 3, col 1 (box 3)
+
+    // index 2 (row 0, col 2) 후보 {1,2,3}:
+    // - col 2에 3이 없어야 함 ✓
+    // - box 0에 3이 없어야 함 ✓
+
+    // Verification:
+    // index 0: row={4-9}, col={3,4,5,6,7,8,9}, box={4-9} → candidates={1,2}
+    // index 1: row={4-9}, col={3,5}, box={4-9} → candidates={1,2}
+    // index 2: row={4-9}, col={6}, box={4-9} → candidates={1,2,3}
+
+    return board;
+  }
+
+  private int[] createBoardWithDifferentCandidatePairs() {
+    // 행 0에서 두 빈칸의 후보가 다름 → Naked Pair 아님
+    int[] board = createEmptyBoard();
+
+    // 행 0: [_, _, 3, 4, 5, 6, 7, 8, 9]
+    board[2] = 3;
+    board[3] = 4;
+    board[4] = 5;
+    board[5] = 6;
+    board[6] = 7;
+    board[7] = 8;
+    board[8] = 9;
+
+    // index 0: 후보 {1,2} - 박스0에 3 배치 필요 없음 (이미 행에 있음)
+    // index 1: 후보 다르게 - 열1에 1 배치
+    board[10] = 1;
+
+    return board;
+  }
 }
