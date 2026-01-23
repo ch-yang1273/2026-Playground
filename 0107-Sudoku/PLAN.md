@@ -44,7 +44,7 @@
 
 ### 2.2 Solving Algorithms (for difficulty classification)
 - [x] `solveNakedSingle()` - Naked Single technique
-- [ ] `solveHiddenSingle()` - Hidden Single technique
+- [x] `solveHiddenSingle()` - Hidden Single technique
 - [ ] `solveNakedPair()` - Naked Pair technique
 - [ ] `solvePointing()` - Pointing technique
 - [ ] `solveBacktracking()` - Backtracking algorithm

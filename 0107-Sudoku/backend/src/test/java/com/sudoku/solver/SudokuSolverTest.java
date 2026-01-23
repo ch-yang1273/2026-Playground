@@ -146,4 +146,142 @@ class SudokuSolverTest {
     }
     return count;
   }
+
+  // ==================== Hidden Single Tests ====================
+
+  @Test
+  void should_returnFalse_when_boardIsNull_forHiddenSingle() {
+    boolean result = SudokuSolver.solveHiddenSingle(null);
+    assertFalse(result);
+  }
+
+  @Test
+  void should_returnFalse_when_boardSizeIsInvalid_forHiddenSingle() {
+    boolean result = SudokuSolver.solveHiddenSingle(new int[80]);
+    assertFalse(result);
+  }
+
+  @Test
+  void should_returnFalse_when_noEmptyCells_forHiddenSingle() {
+    int[] board = createValidCompleteBoard();
+    boolean result = SudokuSolver.solveHiddenSingle(board);
+    assertFalse(result);
+  }
+
+  @Test
+  void should_findHiddenSingleInRow() {
+    // Hidden Single: 특정 숫자가 행에서 단 한 칸에만 들어갈 수 있을 때
+    int[] board = createBoardWithHiddenSingleInRow();
+    boolean result = SudokuSolver.solveHiddenSingle(board);
+    assertTrue(result);
+    // 행 0에서 숫자 9가 들어갈 수 있는 유일한 위치는 index 1
+    assertEquals(9, board[1]);
+  }
+
+  @Test
+  void should_findHiddenSingleInCol() {
+    // Hidden Single: 특정 숫자가 열에서 단 한 칸에만 들어갈 수 있을 때
+    int[] board = createBoardWithHiddenSingleInCol();
+    boolean result = SudokuSolver.solveHiddenSingle(board);
+    assertTrue(result);
+    // 열 0에서 숫자 9가 들어갈 수 있는 유일한 위치
+    assertEquals(9, board[27]);
+  }
+
+  @Test
+  void should_findHiddenSingleInBox() {
+    // Hidden Single: 특정 숫자가 박스에서 단 한 칸에만 들어갈 수 있을 때
+    int[] board = createBoardWithHiddenSingleInBox();
+    boolean result = SudokuSolver.solveHiddenSingle(board);
+    assertTrue(result);
+    // 박스 0에서 숫자 9가 들어갈 수 있는 유일한 위치
+    assertEquals(9, board[20]);
+  }
+
+  @Test
+  void should_returnFalse_when_noHiddenSingle() {
+    int[] board = createEmptyBoard();
+    boolean result = SudokuSolver.solveHiddenSingle(board);
+    assertFalse(result);
+  }
+
+  @Test
+  void should_notModifyBoard_when_noHiddenSingle() {
+    int[] board = createEmptyBoard();
+    int[] copy = board.clone();
+    SudokuSolver.solveHiddenSingle(board);
+    assertArrayEquals(copy, board);
+  }
+
+  private int[] createBoardWithHiddenSingleInRow() {
+    // 행 0에서 숫자 9가 index 1에만 들어갈 수 있도록 설정
+    // 나머지 칸(0, 2-8)은 채워져있거나 9가 같은 열에 존재
+    int[] board = createEmptyBoard();
+
+    // 행 0: [1, _, 2, 3, 4, 5, 6, 7, 8] - index 1만 빈칸
+    board[0] = 1;
+    board[2] = 2;
+    board[3] = 3;
+    board[4] = 4;
+    board[5] = 5;
+    board[6] = 6;
+    board[7] = 7;
+    board[8] = 8;
+
+    // 열 1에서 index 1 외에는 9 불가하도록 설정 필요 없음
+    // 행 0에서 빈칸이 index 1뿐이므로 9는 index 1에만 들어갈 수 있음
+
+    return board;
+  }
+
+  private int[] createBoardWithHiddenSingleInCol() {
+    // 열 0에서 숫자 9가 index 27 (행 3, 열 0)에만 들어갈 수 있도록 설정
+    int[] board = createEmptyBoard();
+
+    // 열 0: index 0, 9, 18, 27, 36, 45, 54, 63, 72
+    // 행 3 (index 27) 제외한 모든 위치 채움
+    board[0] = 1;
+    board[9] = 2;
+    board[18] = 3;
+    // board[27] = 빈칸 (여기에 9가 들어가야 함)
+    board[36] = 4;
+    board[45] = 5;
+    board[54] = 6;
+    board[63] = 7;
+    board[72] = 8;
+
+    // 이제 열 0에서 빈칸은 index 27뿐이고 9가 들어가야 함 (Hidden Single)
+
+    return board;
+  }
+
+  private int[] createBoardWithHiddenSingleInBox() {
+    // 박스 0 (행 0-2, 열 0-2)에서 숫자 9가 index 20 (행 2, 열 2)에만 들어갈 수 있도록 설정
+    int[] board = createEmptyBoard();
+
+    // 박스 0의 다른 셀에서 9 차단
+    // 행 0 전체에 9 차단
+    board[5] = 9; // 행 0에 9 배치
+
+    // 행 1 전체에 9 차단
+    board[14] = 9; // 행 1에 9 배치
+
+    // 박스 0에서 행 2, 열 0-1 채움 (열 2만 빈칸)
+    board[18] = 1; // (2,0) 채움
+    board[19] = 2; // (2,1) 채움
+
+    // 박스 0에서 (0,0), (0,1), (1,0), (1,1) 채움
+    board[0] = 3;
+    board[1] = 4;
+    board[9] = 5;
+    board[10] = 6;
+
+    // (0,2), (1,2) 채움
+    board[2] = 7;
+    board[11] = 8;
+
+    // 이제 박스0에서 빈칸은 index 20 = (2,2)뿐이고 9가 들어가야 함
+
+    return board;
+  }
 }
