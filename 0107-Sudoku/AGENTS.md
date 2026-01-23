@@ -193,20 +193,41 @@ Task(agent="general", prompt="Implement function B with tests")
 
 ### Best Practices
 
-1. **Always parallelize when possible**
+1. **Delegate to `general` by default**
+   - Main agent (Sisyphus) is EXPENSIVE - minimize direct work
+   - `general` is CHEAP with more tokens - delegate most implementation
+   - Sisyphus role: orchestrate, review, commit
+
+2. **Sisyphus should only:**
+   - Plan and create todo lists
+   - Delegate tasks to agents
+   - Review agent outputs
+   - Apply small fixes
+   - Commit changes
+
+3. **Always parallelize when possible**
    - Independent search queries → multiple explore/librarian
    - Independent functions → multiple general agents
 
-2. **Fire background agents early**
+4. **Fire background agents early**
    - Start explore/librarian at task beginning
    - Work on other things while they search
 
-3. **Use general for heavy lifting**
-   - Complex implementations
-   - Test data debugging
-   - Multi-file changes
-
-4. **Reserve oracle for critical decisions**
+5. **Reserve oracle for critical decisions**
    - Expensive but high quality
    - Use after 2+ failed attempts
    - Architecture/security concerns
+
+### Delegation Examples
+
+**Good - Delegate to general:**
+```
+Task(agent="general", prompt="Implement SudokuBoard component with tests")
+Task(agent="general", prompt="Create User entity and repository")
+```
+
+**Bad - Sisyphus doing all the work:**
+```
+// Sisyphus directly writing 100+ lines of code
+// Sisyphus debugging test data manually
+```
