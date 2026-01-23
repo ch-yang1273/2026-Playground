@@ -464,4 +464,92 @@ class SudokuSolverTest {
 
     return board;
   }
+
+  // ==================== Pointing Pair/Triple Tests ====================
+
+  @Test
+  void should_returnFalse_when_boardIsNull_forPointing() {
+    boolean result = SudokuSolver.solvePointing(null);
+    assertFalse(result);
+  }
+
+  @Test
+  void should_returnFalse_when_boardSizeIsInvalid_forPointing() {
+    boolean result = SudokuSolver.solvePointing(new int[80]);
+    assertFalse(result);
+  }
+
+  @Test
+  void should_returnFalse_when_noEmptyCells_forPointing() {
+    int[] board = createValidCompleteBoard();
+    boolean result = SudokuSolver.solvePointing(board);
+    assertFalse(result);
+  }
+
+  @Test
+  void should_findPointingPairInRowAndSolve() {
+    int[] board = createBoardWithPointingPairInRow();
+    boolean result = SudokuSolver.solvePointing(board);
+    assertTrue(result);
+  }
+
+  @Test
+  void should_findPointingPairInColAndSolve() {
+    int[] board = createBoardWithPointingPairInCol();
+    boolean result = SudokuSolver.solvePointing(board);
+    assertTrue(result);
+  }
+
+  @Test
+  void should_returnFalse_when_noPointingPair() {
+    int[] board = createEmptyBoard();
+    boolean result = SudokuSolver.solvePointing(board);
+    assertFalse(result);
+  }
+
+  private int[] createBoardWithPointingPairInRow() {
+    // Box0: candidate 1 only in row 0 → pointing pair
+    // Index 8 (row0,col8): {1,2} → eliminate 1 → naked single = 2
+    int[] board = createEmptyBoard();
+
+    board[12] = 1; // (1,3) blocks row 1 from 1 in box 0
+    board[21] = 1; // (2,3) blocks row 2 from 1 in box 0
+
+    board[3] = 3;
+    board[4] = 4;
+    board[5] = 5;
+    board[6] = 6;
+    board[7] = 7;
+
+    board[35] = 8;
+    board[44] = 9;
+
+    return board;
+  }
+
+  private int[] createBoardWithPointingPairInCol() {
+    // Box 0: candidate 1 only in col 0 (pointing pair)
+    // Col 0, row 8: candidates {1,2} → eliminate 1 → solve to 2
+    int[] board = createEmptyBoard();
+
+    // Block 1 from cols 1,2 of box 0
+    board[37] = 1; // row 4, col 1 (blocks col 1)
+    board[47] = 1; // row 5, col 2 (blocks col 2)
+
+    // Fill col 0 rows 3-7
+    board[27] = 3;
+    board[36] = 4;
+    board[45] = 5;
+    board[54] = 6;
+    board[63] = 7;
+
+    // Block 8,9 from index 72 via row 8
+    board[77] = 8;
+    board[78] = 9;
+
+    // Now index 72: candidates = {1,2}
+    // Pointing pair in box 0 col 0 eliminates 1 from index 72 → solves to 2
+
+    return board;
+  }
 }

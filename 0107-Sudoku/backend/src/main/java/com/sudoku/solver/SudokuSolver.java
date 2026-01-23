@@ -115,6 +115,105 @@ public class SudokuSolver {
     return false;
   }
 
+  public static boolean solvePointing(int[] board) {
+    if (board == null || board.length != BOARD_SIZE * BOARD_SIZE) {
+      return false;
+    }
+
+    for (int box = 0; box < BOARD_SIZE; box++) {
+      for (int num = 1; num <= BOARD_SIZE; num++) {
+        if (findAndApplyPointingInRow(board, box, num)) return true;
+        if (findAndApplyPointingInCol(board, box, num)) return true;
+      }
+    }
+
+    return false;
+  }
+
+  private static boolean findAndApplyPointingInRow(int[] board, int box, int num) {
+    int boxStartRow = (box / 3) * BOX_SIZE;
+    int boxStartCol = (box % 3) * BOX_SIZE;
+
+    int candidateRow = -1;
+
+    for (int r = boxStartRow; r < boxStartRow + BOX_SIZE; r++) {
+      for (int c = boxStartCol; c < boxStartCol + BOX_SIZE; c++) {
+        int index = r * BOARD_SIZE + c;
+        if (board[index] == 0 && canPlace(board, index, num)) {
+          if (candidateRow == -1) {
+            candidateRow = r;
+          } else if (candidateRow != r) {
+            return false;
+          }
+        }
+      }
+    }
+
+    if (candidateRow == -1) {
+      return false;
+    }
+
+    for (int c = 0; c < BOARD_SIZE; c++) {
+      if (c >= boxStartCol && c < boxStartCol + BOX_SIZE) {
+        continue;
+      }
+
+      int index = candidateRow * BOARD_SIZE + c;
+      if (board[index] == 0 && canPlace(board, index, num)) {
+        int candidates = getCandidates(board, index);
+        int candidatesAfterElimination = candidates & ~(1 << num);
+        if (Integer.bitCount(candidatesAfterElimination) == 1) {
+          board[index] = Integer.numberOfTrailingZeros(candidatesAfterElimination);
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  private static boolean findAndApplyPointingInCol(int[] board, int box, int num) {
+    int boxStartRow = (box / 3) * BOX_SIZE;
+    int boxStartCol = (box % 3) * BOX_SIZE;
+
+    int candidateCol = -1;
+
+    for (int r = boxStartRow; r < boxStartRow + BOX_SIZE; r++) {
+      for (int c = boxStartCol; c < boxStartCol + BOX_SIZE; c++) {
+        int index = r * BOARD_SIZE + c;
+        if (board[index] == 0 && canPlace(board, index, num)) {
+          if (candidateCol == -1) {
+            candidateCol = c;
+          } else if (candidateCol != c) {
+            return false;
+          }
+        }
+      }
+    }
+
+    if (candidateCol == -1) {
+      return false;
+    }
+
+    for (int r = 0; r < BOARD_SIZE; r++) {
+      if (r >= boxStartRow && r < boxStartRow + BOX_SIZE) {
+        continue;
+      }
+
+      int index = r * BOARD_SIZE + candidateCol;
+      if (board[index] == 0 && canPlace(board, index, num)) {
+        int candidates = getCandidates(board, index);
+        int candidatesAfterElimination = candidates & ~(1 << num);
+        if (Integer.bitCount(candidatesAfterElimination) == 1) {
+          board[index] = Integer.numberOfTrailingZeros(candidatesAfterElimination);
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   public static boolean solveHiddenSingle(int[] board) {
     if (board == null || board.length != BOARD_SIZE * BOARD_SIZE) {
       return false;

@@ -46,7 +46,7 @@
 - [x] `solveNakedSingle()` - Naked Single technique
 - [x] `solveHiddenSingle()` - Hidden Single technique
 - [x] `solveNakedPair()` - Naked Pair technique
-- [ ] `solvePointing()` - Pointing technique
+- [x] `solvePointing()` - Pointing technique
 - [ ] `solveBacktracking()` - Backtracking algorithm
 - [ ] `hasUniqueSolution()` - Verify unique solution
 
