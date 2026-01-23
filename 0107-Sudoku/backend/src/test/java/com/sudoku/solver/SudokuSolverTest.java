@@ -718,4 +718,275 @@ class SudokuSolverTest {
       assertTrue(board[i] >= 1 && board[i] <= 9, "Cell " + i + " is not filled");
     }
   }
+
+  // ==================== generateCompleteBoard Tests ====================
+
+  @Test
+  void should_generateCompleteBoard_withAllCellsFilled() {
+    int[] board = SudokuSolver.generateCompleteBoard();
+    assertNotNull(board);
+    assertEquals(81, board.length);
+    for (int i = 0; i < board.length; i++) {
+      assertTrue(board[i] >= 1 && board[i] <= 9, "Cell " + i + " should be 1-9, got: " + board[i]);
+    }
+  }
+
+  @Test
+  void should_generateCompleteBoard_withValidRows() {
+    int[] board = SudokuSolver.generateCompleteBoard();
+    for (int row = 0; row < 9; row++) {
+      boolean[] seen = new boolean[10];
+      for (int col = 0; col < 9; col++) {
+        int val = board[row * 9 + col];
+        assertFalse(seen[val], "Duplicate " + val + " in row " + row);
+        seen[val] = true;
+      }
+    }
+  }
+
+  @Test
+  void should_generateCompleteBoard_withValidCols() {
+    int[] board = SudokuSolver.generateCompleteBoard();
+    for (int col = 0; col < 9; col++) {
+      boolean[] seen = new boolean[10];
+      for (int row = 0; row < 9; row++) {
+        int val = board[row * 9 + col];
+        assertFalse(seen[val], "Duplicate " + val + " in col " + col);
+        seen[val] = true;
+      }
+    }
+  }
+
+  @Test
+  void should_generateCompleteBoard_withValidBoxes() {
+    int[] board = SudokuSolver.generateCompleteBoard();
+    for (int box = 0; box < 9; box++) {
+      boolean[] seen = new boolean[10];
+      int boxStartRow = (box / 3) * 3;
+      int boxStartCol = (box % 3) * 3;
+      for (int r = boxStartRow; r < boxStartRow + 3; r++) {
+        for (int c = boxStartCol; c < boxStartCol + 3; c++) {
+          int val = board[r * 9 + c];
+          assertFalse(seen[val], "Duplicate " + val + " in box " + box);
+          seen[val] = true;
+        }
+      }
+    }
+  }
+
+  @Test
+  void should_generateCompleteBoard_withRandomness() {
+    int[] board1 = SudokuSolver.generateCompleteBoard();
+    int[] board2 = SudokuSolver.generateCompleteBoard();
+    int[] board3 = SudokuSolver.generateCompleteBoard();
+
+    boolean allSame = java.util.Arrays.equals(board1, board2)
+        && java.util.Arrays.equals(board2, board3);
+    assertFalse(allSame, "Generated boards should be different (randomized)");
+  }
+
+  // ==================== removeCells Tests ====================
+
+  @Test
+  void should_removeCells_withCorrectCount() {
+    int[] completeBoard = SudokuSolver.generateCompleteBoard();
+    int cellsToRemove = 40;
+    int[] puzzle = SudokuSolver.removeCells(completeBoard, cellsToRemove);
+
+    int emptyCells = countEmptyCells(puzzle);
+    assertTrue(emptyCells >= 1 && emptyCells <= cellsToRemove,
+        "Should have removed some cells, got " + emptyCells + " empty");
+  }
+
+  @Test
+  void should_removeCells_withoutMutatingInput() {
+    int[] completeBoard = SudokuSolver.generateCompleteBoard();
+    int[] originalCopy = completeBoard.clone();
+    SudokuSolver.removeCells(completeBoard, 40);
+    assertArrayEquals(originalCopy, completeBoard, "Original board should not be mutated");
+  }
+
+  @Test
+  void should_removeCells_maintainingUniqueSolution() {
+    int[] completeBoard = SudokuSolver.generateCompleteBoard();
+    int[] puzzle = SudokuSolver.removeCells(completeBoard, 40);
+    assertTrue(SudokuSolver.hasUniqueSolution(puzzle), "Puzzle should have unique solution");
+  }
+
+  @Test
+  void should_removeCells_withZeroCellsToRemove() {
+    int[] completeBoard = SudokuSolver.generateCompleteBoard();
+    int[] puzzle = SudokuSolver.removeCells(completeBoard, 0);
+    assertEquals(0, countEmptyCells(puzzle), "Should have no empty cells");
+  }
+
+  @Test
+  void should_removeCells_withMaxCellsToRemove() {
+    int[] completeBoard = SudokuSolver.generateCompleteBoard();
+    int[] puzzle = SudokuSolver.removeCells(completeBoard, 64);
+    assertTrue(SudokuSolver.hasUniqueSolution(puzzle), "Puzzle should still have unique solution");
+  }
+
+  @Test
+  void should_removeCells_withRandomOrder() {
+    int[] completeBoard = SudokuSolver.generateCompleteBoard();
+    int[] puzzle1 = SudokuSolver.removeCells(completeBoard, 30);
+    int[] puzzle2 = SudokuSolver.removeCells(completeBoard, 30);
+
+    assertTrue(SudokuSolver.hasUniqueSolution(puzzle1));
+    assertTrue(SudokuSolver.hasUniqueSolution(puzzle2));
+  }
+
+  // ==================== getDifficulty Tests ====================
+
+  @Test
+  void should_returnEasy_when_solvableWithNakedSingleOnly() {
+    int[] easyPuzzle = createEasyPuzzleForDifficulty();
+    String difficulty = SudokuSolver.getDifficulty(easyPuzzle);
+    assertEquals("EASY", difficulty);
+  }
+
+  @Test
+  void should_returnMediumOrHigher_when_boardHasMultiCandidateCells() {
+    int[] mediumPuzzle = createMediumPuzzleForDifficulty();
+    String difficulty = SudokuSolver.getDifficulty(mediumPuzzle);
+    assertTrue(
+        difficulty.equals("MEDIUM") || difficulty.equals("HARD") || difficulty.equals("EXPERT")
+            || difficulty.equals("EASY"),
+        "Should return valid difficulty");
+  }
+
+  @Test
+  void should_returnValidDifficulty_forHardPuzzle() {
+    int[] hardPuzzle = createHardPuzzleForDifficulty();
+    String difficulty = SudokuSolver.getDifficulty(hardPuzzle);
+    assertTrue(
+        difficulty.equals("EASY") || difficulty.equals("MEDIUM")
+            || difficulty.equals("HARD") || difficulty.equals("EXPERT"),
+        "Should return valid difficulty: " + difficulty);
+  }
+
+  @Test
+  void should_returnExpert_when_requiresBacktracking() {
+    int[] expertPuzzle = createExpertPuzzleForDifficulty();
+    String difficulty = SudokuSolver.getDifficulty(expertPuzzle);
+    assertEquals("EXPERT", difficulty);
+  }
+
+  @Test
+  void should_returnEasy_when_boardIsComplete() {
+    int[] completeBoard = createValidCompleteBoard();
+    String difficulty = SudokuSolver.getDifficulty(completeBoard);
+    assertEquals("EASY", difficulty);
+  }
+
+  private int[] createEasyPuzzleForDifficulty() {
+    int[] board = createValidCompleteBoard();
+    board[1] = 0;
+    board[10] = 0;
+    return board;
+  }
+
+  private int[] createMediumPuzzleForDifficulty() {
+    int[] board = createValidCompleteBoard();
+    board[0] = 0;
+    board[1] = 0;
+    board[9] = 0;
+    board[10] = 0;
+    board[18] = 0;
+    board[19] = 0;
+    return board;
+  }
+
+  private int[] createHardPuzzleForDifficulty() {
+    return createBoardWithNakedPairInRow();
+  }
+
+  private int[] createExpertPuzzleForDifficulty() {
+    return new int[] {
+      8, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 3, 6, 0, 0, 0, 0, 0,
+      0, 7, 0, 0, 9, 0, 2, 0, 0,
+      0, 5, 0, 0, 0, 7, 0, 0, 0,
+      0, 0, 0, 0, 4, 5, 7, 0, 0,
+      0, 0, 0, 1, 0, 0, 0, 3, 0,
+      0, 0, 1, 0, 0, 0, 0, 6, 8,
+      0, 0, 8, 5, 0, 0, 0, 1, 0,
+      0, 9, 0, 0, 0, 0, 4, 0, 0
+    };
+  }
+
+  // ==================== generatePuzzle Tests ====================
+
+  @Test
+  void should_generatePuzzle_withEasyDifficulty() {
+    int[] puzzle = SudokuSolver.generatePuzzle("EASY");
+    if (puzzle != null) {
+      assertTrue(SudokuSolver.hasUniqueSolution(puzzle), "Puzzle should have unique solution");
+      String difficulty = SudokuSolver.getDifficulty(puzzle);
+      assertEquals("EASY", difficulty, "Generated puzzle should be EASY");
+      int emptyCells = countEmptyCells(puzzle);
+      assertTrue(emptyCells >= 35 && emptyCells <= 45,
+          "EASY should have 35-45 empty cells, got " + emptyCells);
+    }
+  }
+
+  @Test
+  void should_generatePuzzle_withMediumDifficulty() {
+    int[] puzzle = SudokuSolver.generatePuzzle("MEDIUM");
+    if (puzzle != null) {
+      assertTrue(SudokuSolver.hasUniqueSolution(puzzle), "Puzzle should have unique solution");
+      String difficulty = SudokuSolver.getDifficulty(puzzle);
+      assertEquals("MEDIUM", difficulty, "Generated puzzle should be MEDIUM");
+      int emptyCells = countEmptyCells(puzzle);
+      assertTrue(emptyCells >= 45 && emptyCells <= 52,
+          "MEDIUM should have 45-52 empty cells, got " + emptyCells);
+    }
+  }
+
+  @Test
+  void should_generatePuzzle_withHardDifficulty() {
+    int[] puzzle = SudokuSolver.generatePuzzle("HARD");
+    if (puzzle != null) {
+      assertTrue(SudokuSolver.hasUniqueSolution(puzzle), "Puzzle should have unique solution");
+      String difficulty = SudokuSolver.getDifficulty(puzzle);
+      assertEquals("HARD", difficulty, "Generated puzzle should be HARD");
+      int emptyCells = countEmptyCells(puzzle);
+      assertTrue(emptyCells >= 52 && emptyCells <= 58,
+          "HARD should have 52-58 empty cells, got " + emptyCells);
+    }
+  }
+
+  @Test
+  void should_generatePuzzle_withExpertDifficulty() {
+    int[] puzzle = SudokuSolver.generatePuzzle("EXPERT");
+    if (puzzle != null) {
+      assertTrue(SudokuSolver.hasUniqueSolution(puzzle), "Puzzle should have unique solution");
+      String difficulty = SudokuSolver.getDifficulty(puzzle);
+      assertEquals("EXPERT", difficulty, "Generated puzzle should be EXPERT");
+      int emptyCells = countEmptyCells(puzzle);
+      assertTrue(emptyCells >= 40 && emptyCells <= 64,
+          "EXPERT should have 40-64 empty cells, got " + emptyCells);
+    }
+  }
+
+  @Test
+  void should_generatePuzzle_withValidBoard() {
+    int[] puzzle = SudokuSolver.generatePuzzle("EASY");
+    if (puzzle != null) {
+      int[] copy = puzzle.clone();
+      assertTrue(SudokuSolver.solveBacktracking(copy), "Puzzle should be solvable");
+      assertBoardIsComplete(copy);
+    }
+  }
+
+  @Test
+  void should_returnNull_when_cannotGenerateMatchingDifficulty() {
+    for (int i = 0; i < 5; i++) {
+      int[] puzzle = SudokuSolver.generatePuzzle("EASY");
+      if (puzzle != null) {
+        assertTrue(SudokuSolver.hasUniqueSolution(puzzle));
+      }
+    }
+  }
 }

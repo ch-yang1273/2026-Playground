@@ -1,6 +1,12 @@
 package com.sudoku.solver;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
 public class SudokuSolver {
+  private static final Random RANDOM = new Random();
   private static final int BOARD_SIZE = 9;
   private static final int BOX_SIZE = 3;
 
@@ -440,5 +446,159 @@ public class SudokuSolver {
         board[emptyIndex] = 0;
       }
     }
+  }
+
+  public static int[] generateCompleteBoard() {
+    int[] board = new int[BOARD_SIZE * BOARD_SIZE];
+    generateCompleteBoardRecursive(board);
+    return board;
+  }
+
+  private static boolean generateCompleteBoardRecursive(int[] board) {
+    int emptyIndex = -1;
+    for (int i = 0; i < board.length; i++) {
+      if (board[i] == 0) {
+        emptyIndex = i;
+        break;
+      }
+    }
+
+    if (emptyIndex == -1) {
+      return true;
+    }
+
+    List<Integer> candidates = getCandidatesList(board, emptyIndex);
+    Collections.shuffle(candidates, RANDOM);
+
+    for (int num : candidates) {
+      board[emptyIndex] = num;
+      if (generateCompleteBoardRecursive(board)) {
+        return true;
+      }
+      board[emptyIndex] = 0;
+    }
+
+    return false;
+  }
+
+  private static List<Integer> getCandidatesList(int[] board, int index) {
+    List<Integer> candidates = new ArrayList<>();
+    int candidateMask = getCandidates(board, index);
+    for (int num = 1; num <= BOARD_SIZE; num++) {
+      if ((candidateMask & (1 << num)) != 0) {
+        candidates.add(num);
+      }
+    }
+    return candidates;
+  }
+
+  public static int[] removeCells(int[] board, int cellsToRemove) {
+    int[] result = board.clone();
+
+    List<Integer> indices = new ArrayList<>();
+    for (int i = 0; i < result.length; i++) {
+      if (result[i] != 0) {
+        indices.add(i);
+      }
+    }
+    Collections.shuffle(indices, RANDOM);
+
+    int removed = 0;
+    for (int index : indices) {
+      if (removed >= cellsToRemove) {
+        break;
+      }
+
+      int backup = result[index];
+      result[index] = 0;
+
+      if (hasUniqueSolution(result)) {
+        removed++;
+      } else {
+        result[index] = backup;
+      }
+    }
+
+    return result;
+  }
+
+  public static String getDifficulty(int[] board) {
+    int[] copy = board.clone();
+
+    boolean usedHiddenSingle = false;
+    boolean usedAdvancedTechnique = false;
+
+    while (hasEmptyCell(copy)) {
+      if (solveNakedSingle(copy)) {
+        continue;
+      }
+
+      if (solveHiddenSingle(copy)) {
+        usedHiddenSingle = true;
+        continue;
+      }
+
+      if (solveNakedPair(copy) || solvePointing(copy)) {
+        usedAdvancedTechnique = true;
+        continue;
+      }
+
+      return "EXPERT";
+    }
+
+    if (usedAdvancedTechnique) {
+      return "HARD";
+    }
+    if (usedHiddenSingle) {
+      return "MEDIUM";
+    }
+    return "EASY";
+  }
+
+  private static boolean hasEmptyCell(int[] board) {
+    for (int cell : board) {
+      if (cell == 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static int[] generatePuzzle(String difficulty) {
+    int minRemove;
+    int maxRemove;
+
+    switch (difficulty) {
+      case "EASY":
+        minRemove = 35;
+        maxRemove = 45;
+        break;
+      case "MEDIUM":
+        minRemove = 45;
+        maxRemove = 52;
+        break;
+      case "HARD":
+        minRemove = 52;
+        maxRemove = 58;
+        break;
+      case "EXPERT":
+        minRemove = 58;
+        maxRemove = 64;
+        break;
+      default:
+        return null;
+    }
+
+    for (int attempt = 0; attempt < 10; attempt++) {
+      int[] completeBoard = generateCompleteBoard();
+      int cellsToRemove = minRemove + RANDOM.nextInt(maxRemove - minRemove + 1);
+      int[] puzzle = removeCells(completeBoard, cellsToRemove);
+
+      if (getDifficulty(puzzle).equals(difficulty)) {
+        return puzzle;
+      }
+    }
+
+    return null;
   }
 }

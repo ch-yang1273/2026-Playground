@@ -51,10 +51,10 @@
 - [x] `hasUniqueSolution()` - Verify unique solution
 
 ### 2.3 Generation Algorithms
-- [ ] `generateCompleteBoard()` - Generate complete valid board
-- [ ] `removeCells()` - Remove cells while maintaining unique solution
-- [ ] `getDifficulty()` - Classify puzzle difficulty
-- [ ] `generatePuzzle()` - Generate puzzle by difficulty
+- [x] `generateCompleteBoard()` - Generate complete valid board
+- [x] `removeCells()` - Remove cells while maintaining unique solution
+- [x] `getDifficulty()` - Classify puzzle difficulty
+- [x] `generatePuzzle()` - Generate puzzle by difficulty
 
 ---
 
