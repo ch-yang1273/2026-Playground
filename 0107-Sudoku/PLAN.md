@@ -80,11 +80,11 @@
 ## 🔐 Phase 4: Authentication API (Backend)
 
 ### Tests & Implementation
-- [ ] POST /api/auth/signup - User registration
-- [ ] POST /api/auth/login - User login
-- [ ] POST /api/auth/logout - User logout
-- [ ] JWT token generation & validation
-- [ ] Spring Security configuration
+- [x] POST /api/auth/signup - User registration
+- [x] POST /api/auth/login - User login
+- [x] POST /api/auth/logout - User logout
+- [x] JWT token generation & validation
+- [x] Spring Security configuration
 
 ---
 
