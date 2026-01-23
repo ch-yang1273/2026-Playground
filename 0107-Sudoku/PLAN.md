@@ -61,19 +61,19 @@
 ## 🗄️ Phase 3: Database & Entities (Backend)
 
 ### 3.1 Database Schema
-- [ ] Create users table
-- [ ] Create puzzles table
-- [ ] Create game_records table
+- [x] Create users table
+- [x] Create puzzles table
+- [x] Create game_records table
 
 ### 3.2 JPA Entities
-- [ ] User entity (id, email, password, nickname, role, timestamps)
-- [ ] Puzzle entity (id, difficulty, initial_board, solution, is_active, timestamp)
-- [ ] GameRecord entity (id, user_id, puzzle_id, completion_time, hint_count, is_completed, timestamp)
+- [x] User entity (id, email, password, nickname, role, timestamps)
+- [x] Puzzle entity (id, difficulty, initial_board, solution, is_active, timestamp)
+- [x] GameRecord entity (id, user_id, puzzle_id, completion_time, hint_count, is_completed, timestamp)
 
 ### 3.3 Repositories
-- [ ] UserRepository
-- [ ] PuzzleRepository
-- [ ] GameRecordRepository
+- [x] UserRepository
+- [x] PuzzleRepository
+- [x] GameRecordRepository
 
 ---
 
