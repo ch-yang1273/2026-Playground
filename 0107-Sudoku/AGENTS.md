@@ -15,7 +15,8 @@ TDD-based Sudoku web application with Vue.js frontend and Spring Boot backend.
 
 ## Commands
 
-### Frontend (Vue.js)
+### Frontend (Vue.js + TypeScript)
+Run commands from `frontend/` directory:
 ```bash
 npm run dev              # Start dev server
 npm run build            # Build for production
@@ -26,22 +27,26 @@ npm run lint             # Run ESLint
 npm run typecheck        # Run TypeScript check
 ```
 
-### Backend (Spring Boot)
+### Backend (Spring Boot + Java)
+Run commands from project root (uses Gradle wrapper):
 ```bash
 ./gradlew clean build    # Build project
 ./gradlew test           # Run all JUnit tests
 ./gradlew test --tests <TestClass>  # Run single test class
 ./gradlew bootRun        # Start dev server
-./gradlew checkstyleMain # Run style checks
 ```
 
 ### E2E (Playwright)
+Run commands from project root:
 ```bash
-npx playwright test      # Run all E2E tests
+npm run test:e2e         # Run all E2E tests
+npm run test:e2e:ui      # Run tests in UI mode
+npm run test:e2e:report  # View test report
 npx playwright test <file>  # Run single test file
 npx playwright test --project=chromium  # Run in specific browser
-npx playwright show-report  # View test report
 ```
+- Test files in `e2e/` directory with `.spec.ts` extension
+- Runs frontend dev server on http://localhost:5173
 
 ## Code Style Guidelines
 
@@ -53,14 +58,16 @@ npx playwright show-report  # View test report
 - Max file length: 300 lines
 
 ### Frontend (Vue.js + TypeScript)
-- **Imports**: Order = external libs, internal modules, relative imports
-- **Components**: PascalCase for component names, kebab-case for templates
+- **Imports**: External libs, then internal modules, then relative imports
+- **Components**: PascalCase for component names, kebab-case in templates
 - **Composables**: camelCase with 'use' prefix (e.g., `useSudokuBoard`)
-- **Types**: Use interfaces for object shapes, types for unions
-- **State**: Use Pinia stores for shared state
+- **Types**: Interfaces for object shapes, types for unions
+- **State**: Pinia stores for shared state
 - **Props**: Define with TypeScript interfaces
 - **Emits**: Define with TypeScript types
-- **Formatting**: Prettier with 2-space indentation
+- **Formatting**: Prettier (no semicolons, single quotes, 2-space indent, 100 char width)
+- **Linting**: ESLint with TypeScript + Vue + Prettier, unused vars are warnings
+- **TypeScript**: Strict mode enabled, no unused locals/params
 
 ### Backend (Spring Boot + Java)
 - **Packages**: `com.sudoku.{layer}` (controller, service, repository, domain)
@@ -71,6 +78,7 @@ npx playwright show-report  # View test report
 - **Services**: Business logic, use `@Transactional` for DB operations
 - **Repositories**: Extend JpaRepository, add custom queries with `@Query`
 - **Controllers**: REST endpoints, return ResponseEntity
+- **Utility Classes**: Static methods, private constructors, final constants
 
 ### Error Handling
 - **Frontend**: Use composables for API errors, show user-friendly messages
@@ -81,7 +89,8 @@ npx playwright show-report  # View test report
 - **Unit tests**: Test single functions in isolation
 - **Integration tests**: Test API endpoints with @SpringBootTest
 - **E2E tests**: Test user journeys from UI
-- **Test naming**: `should_<expectedBehavior>_when_<condition>`
+- **Test naming**: JUnit: `should_<expectedBehavior>_when_<condition>`
+- **Test naming**: Playwright: `should_<expectedBehavior>_when_<condition>` (recommended)
 
 ### Sudoku Logic
 - **Board representation**: 81-element array (row-major) or 9x9 2D array
