@@ -146,3 +146,67 @@ npx playwright test --project=chromium  # Run in specific browser
 - Track progress in PLAN.md (persists between sessions)
 - Use git commits for version history (required)
 - Each Phase completion can be marked with `[IN PROGRESS]` → `[COMPLETED]`
+
+## AI Agent Parallel Execution
+
+### Available Agents
+
+| Agent | Cost | Purpose |
+|-------|------|---------|
+| `explore` | FREE | Codebase pattern search (read-only) |
+| `librarian` | CHEAP | External docs, OSS examples, GitHub search |
+| `general` | CHEAP | Multi-step tasks, implementation, debugging |
+| `oracle` | EXPENSIVE | Architecture decisions, complex analysis |
+
+### When to Use Which Agent
+
+| Situation | Agent(s) to Use |
+|-----------|-----------------|
+| Find existing code patterns | `explore` |
+| Research external library usage | `librarian` |
+| Implement new feature | `general` |
+| Debug complex test failures | `general` |
+| Multiple independent tasks | `general` x N (parallel) |
+| Architecture/design decisions | `oracle` |
+| Code review after implementation | `oracle` |
+
+### Parallel Execution Pattern
+
+**Background agents (explore, librarian):**
+```
+// Fire and forget - system notifies on completion
+background_task(agent="explore", prompt="Find X in codebase")
+background_task(agent="librarian", prompt="Research Y technique")
+
+// Continue working while they run
+// Collect results with background_output(task_id) when notified
+```
+
+**General agent for parallel implementation:**
+```
+// Multiple independent tasks simultaneously
+Task(agent="general", prompt="Implement function A with tests")
+Task(agent="general", prompt="Implement function B with tests")
+
+// Results returned directly, apply to codebase
+```
+
+### Best Practices
+
+1. **Always parallelize when possible**
+   - Independent search queries → multiple explore/librarian
+   - Independent functions → multiple general agents
+
+2. **Fire background agents early**
+   - Start explore/librarian at task beginning
+   - Work on other things while they search
+
+3. **Use general for heavy lifting**
+   - Complex implementations
+   - Test data debugging
+   - Multi-file changes
+
+4. **Reserve oracle for critical decisions**
+   - Expensive but high quality
+   - Use after 2+ failed attempts
+   - Architecture/security concerns
