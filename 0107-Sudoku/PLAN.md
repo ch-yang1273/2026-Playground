@@ -47,8 +47,8 @@
 - [x] `solveHiddenSingle()` - Hidden Single technique
 - [x] `solveNakedPair()` - Naked Pair technique
 - [x] `solvePointing()` - Pointing technique
-- [ ] `solveBacktracking()` - Backtracking algorithm
-- [ ] `hasUniqueSolution()` - Verify unique solution
+- [x] `solveBacktracking()` - Backtracking algorithm
+- [x] `hasUniqueSolution()` - Verify unique solution
 
 ### 2.3 Generation Algorithms
 - [ ] `generateCompleteBoard()` - Generate complete valid board

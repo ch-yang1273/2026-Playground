@@ -552,4 +552,170 @@ class SudokuSolverTest {
 
     return board;
   }
+
+  // ==================== Backtracking Tests ====================
+
+  @Test
+  void should_returnFalse_when_boardIsNull_forBacktracking() {
+    boolean result = SudokuSolver.solveBacktracking(null);
+    assertFalse(result);
+  }
+
+  @Test
+  void should_returnFalse_when_boardSizeIsInvalid_forBacktracking() {
+    boolean result = SudokuSolver.solveBacktracking(new int[80]);
+    assertFalse(result);
+  }
+
+  @Test
+  void should_returnTrue_when_boardIsAlreadySolved() {
+    int[] board = createValidCompleteBoard();
+    boolean result = SudokuSolver.solveBacktracking(board);
+    assertTrue(result);
+  }
+
+  @Test
+  void should_solveEmptyBoard_usingBacktracking() {
+    int[] board = createEmptyBoard();
+    boolean result = SudokuSolver.solveBacktracking(board);
+    assertTrue(result);
+    assertBoardIsComplete(board);
+  }
+
+  @Test
+  void should_solveEasyPuzzle_usingBacktracking() {
+    int[] board = createEasyPuzzle();
+    boolean result = SudokuSolver.solveBacktracking(board);
+    assertTrue(result);
+    assertBoardIsComplete(board);
+  }
+
+  @Test
+  void should_solveHardPuzzle_usingBacktracking() {
+    int[] board = createHardPuzzle();
+    boolean result = SudokuSolver.solveBacktracking(board);
+    assertTrue(result);
+    assertBoardIsComplete(board);
+  }
+
+  @Test
+  void should_returnFalse_when_puzzleIsUnsolvable() {
+    int[] board = createUnsolvablePuzzle();
+    boolean result = SudokuSolver.solveBacktracking(board);
+    assertFalse(result);
+  }
+
+  // ==================== Unique Solution Tests ====================
+
+  @Test
+  void should_returnFalse_when_boardIsNull_forUniqueSolution() {
+    boolean result = SudokuSolver.hasUniqueSolution(null);
+    assertFalse(result);
+  }
+
+  @Test
+  void should_returnFalse_when_boardSizeIsInvalid_forUniqueSolution() {
+    boolean result = SudokuSolver.hasUniqueSolution(new int[80]);
+    assertFalse(result);
+  }
+
+  @Test
+  void should_returnTrue_when_puzzleHasUniqueSolution() {
+    int[] board = createEasyPuzzle();
+    boolean result = SudokuSolver.hasUniqueSolution(board);
+    assertTrue(result);
+  }
+
+  @Test
+  void should_returnTrue_when_boardIsAlreadySolved_forUniqueSolution() {
+    int[] board = createValidCompleteBoard();
+    boolean result = SudokuSolver.hasUniqueSolution(board);
+    assertTrue(result);
+  }
+
+  @Test
+  void should_returnFalse_when_puzzleHasMultipleSolutions() {
+    int[] board = createPuzzleWithMultipleSolutions();
+    boolean result = SudokuSolver.hasUniqueSolution(board);
+    assertFalse(result);
+  }
+
+  @Test
+  void should_returnFalse_when_emptyBoard_forUniqueSolution() {
+    int[] board = createEmptyBoard();
+    boolean result = SudokuSolver.hasUniqueSolution(board);
+    assertFalse(result);
+  }
+
+  @Test
+  void should_notModifyBoard_when_checkingUniqueSolution() {
+    int[] board = createEasyPuzzle();
+    int[] copy = board.clone();
+    SudokuSolver.hasUniqueSolution(board);
+    assertArrayEquals(copy, board);
+  }
+
+  private int[] createEasyPuzzle() {
+    return new int[] {
+      5, 3, 0, 0, 7, 0, 0, 0, 0,
+      6, 0, 0, 1, 9, 5, 0, 0, 0,
+      0, 9, 8, 0, 0, 0, 0, 6, 0,
+      8, 0, 0, 0, 6, 0, 0, 0, 3,
+      4, 0, 0, 8, 0, 3, 0, 0, 1,
+      7, 0, 0, 0, 2, 0, 0, 0, 6,
+      0, 6, 0, 0, 0, 0, 2, 8, 0,
+      0, 0, 0, 4, 1, 9, 0, 0, 5,
+      0, 0, 0, 0, 8, 0, 0, 7, 9
+    };
+  }
+
+  private int[] createHardPuzzle() {
+    return new int[] {
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 3, 0, 8, 5,
+      0, 0, 1, 0, 2, 0, 0, 0, 0,
+      0, 0, 0, 5, 0, 7, 0, 0, 0,
+      0, 0, 4, 0, 0, 0, 1, 0, 0,
+      0, 9, 0, 0, 0, 0, 0, 0, 0,
+      5, 0, 0, 0, 0, 0, 0, 7, 3,
+      0, 0, 2, 0, 1, 0, 0, 0, 0,
+      0, 0, 0, 0, 4, 0, 0, 0, 9
+    };
+  }
+
+  private int[] createUnsolvablePuzzle() {
+    int[] board = createEmptyBoard();
+    board[0] = 1;
+    board[1] = 2;
+    board[2] = 3;
+    board[3] = 4;
+    board[4] = 5;
+    board[5] = 6;
+    board[6] = 7;
+    board[7] = 8;
+    board[17] = 9;
+    board[26] = 9;
+    board[80] = 9;
+    return board;
+  }
+
+  private int[] createPuzzleWithMultipleSolutions() {
+    return new int[] {
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0,
+      1, 2, 3, 4, 5, 6, 7, 8, 9
+    };
+  }
+
+  private void assertBoardIsComplete(int[] board) {
+    for (int i = 0; i < board.length; i++) {
+      assertTrue(board[i] >= 1 && board[i] <= 9, "Cell " + i + " is not filled");
+    }
+  }
 }

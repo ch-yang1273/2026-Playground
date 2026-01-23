@@ -338,4 +338,107 @@ public class SudokuSolver {
 
     return ~usedValues & 0x3FE;
   }
+
+  public static boolean solveBacktracking(int[] board) {
+    if (board == null || board.length != BOARD_SIZE * BOARD_SIZE) {
+      return false;
+    }
+    return solveBacktrackingRecursive(board);
+  }
+
+  private static boolean solveBacktrackingRecursive(int[] board) {
+    int emptyIndex = findEmptyCellWithMinCandidates(board);
+
+    if (emptyIndex == -1) {
+      return true;
+    }
+
+    int candidates = getCandidates(board, emptyIndex);
+
+    if (candidates == 0) {
+      return false;
+    }
+
+    for (int num = 1; num <= BOARD_SIZE; num++) {
+      if ((candidates & (1 << num)) != 0) {
+        board[emptyIndex] = num;
+
+        if (solveBacktrackingRecursive(board)) {
+          return true;
+        }
+
+        board[emptyIndex] = 0;
+      }
+    }
+
+    return false;
+  }
+
+  private static int findEmptyCellWithMinCandidates(int[] board) {
+    int minCandidates = BOARD_SIZE + 1;
+    int minIndex = -1;
+
+    for (int i = 0; i < board.length; i++) {
+      if (board[i] == 0) {
+        int candidateCount = Integer.bitCount(getCandidates(board, i));
+
+        if (candidateCount == 0) {
+          return i;
+        }
+
+        if (candidateCount < minCandidates) {
+          minCandidates = candidateCount;
+          minIndex = i;
+
+          if (minCandidates == 1) {
+            return minIndex;
+          }
+        }
+      }
+    }
+
+    return minIndex;
+  }
+
+  public static boolean hasUniqueSolution(int[] board) {
+    if (board == null || board.length != BOARD_SIZE * BOARD_SIZE) {
+      return false;
+    }
+
+    int[] boardCopy = board.clone();
+    int[] solutionCount = new int[1];
+
+    countSolutions(boardCopy, solutionCount, 2);
+
+    return solutionCount[0] == 1;
+  }
+
+  private static void countSolutions(int[] board, int[] count, int maxCount) {
+    if (count[0] >= maxCount) {
+      return;
+    }
+
+    int emptyIndex = findEmptyCellWithMinCandidates(board);
+
+    if (emptyIndex == -1) {
+      count[0]++;
+      return;
+    }
+
+    int candidates = getCandidates(board, emptyIndex);
+
+    if (candidates == 0) {
+      return;
+    }
+
+    for (int num = 1; num <= BOARD_SIZE && count[0] < maxCount; num++) {
+      if ((candidates & (1 << num)) != 0) {
+        board[emptyIndex] = num;
+
+        countSolutions(board, count, maxCount);
+
+        board[emptyIndex] = 0;
+      }
+    }
+  }
 }
