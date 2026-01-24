@@ -91,11 +91,11 @@
 ## 🎮 Phase 5: Game API (Backend)
 
 ### Tests & Implementation
-- [ ] GET /api/games/start - Assign random puzzle by difficulty
-- [ ] POST /api/games/{id}/complete - Complete game
-- [ ] POST /api/games/{id}/give-up - Give up game
-- [ ] Hint provision logic
-- [ ] Hint count limits by difficulty (Easy: 5, Medium: 3, Hard: 2, Expert: 1)
+- [x] GET /api/games/start - Assign random puzzle by difficulty
+- [x] POST /api/games/{id}/complete - Complete game
+- [x] POST /api/games/{id}/give-up - Give up game
+- [x] Hint provision logic
+- [x] Hint count limits by difficulty (Easy: 5, Medium: 3, Hard: 2, Expert: 1)
 
 ---
 
