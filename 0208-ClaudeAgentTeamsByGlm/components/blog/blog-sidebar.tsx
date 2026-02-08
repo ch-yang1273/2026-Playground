@@ -196,6 +196,7 @@ export function BlogSidebar({
           className={cn(
             'flex flex-col',
             'fixed left-0 top-16 bottom-0',
+            'z-50',
             'border-r border-border/30',
             'bg-gradient-to-b from-card/95 via-card/90 to-card/95',
             'backdrop-blur-xl shadow-xl',
