@@ -1,0 +1,226 @@
+---
+title: "Optimizing React Performance: Advanced Techniques"
+description: "Deep dive into React performance optimization strategies, from memoization to virtual scrolling and beyond."
+date: "2025-02-01"
+author: "David Kim"
+tags: ["React", "Performance", "Optimization", "JavaScript"]
+category: "React"
+readTime: 12
+published: true
+---
+
+# Optimizing React Performance: Advanced Techniques
+
+Performance optimization is crucial for delivering smooth user experiences. Let's explore advanced React optimization techniques.
+
+## Understanding React's Rendering
+
+React re-renders components when:
+- State changes via `useState`
+- Context values change
+- Parent components re-render
+
+## Memoization with useMemo and useCallback
+
+### useMemo for Expensive Calculations
+
+```jsx
+function ExpensiveComponent({ items, filter }) {
+  const filteredItems = useMemo(() => {
+    console.log('Filtering items...');
+    return items.filter(item => item.category === filter);
+  }, [items, filter]);
+
+  return (
+    <ul>
+      {filteredItems.map(item => <li key={item.id}>{item.name}</li>)}
+    </ul>
+  );
+}
+```
+
+### useCallback for Stable Function References
+
+```jsx
+function ParentComponent() {
+  const [count, setCount] = useState(0);
+
+  // Without useCallback, Child re-renders on every count change
+  const handleClick = useCallback(() => {
+    console.log('Clicked!');
+  }, []);
+
+  return (
+    <>
+      <button onClick={() => setCount(c => c + 1)}>Count: {count}</button>
+      <ChildComponent onClick={handleClick} />
+    </>
+  );
+}
+
+const ChildComponent = memo(({ onClick }) => {
+  console.log('Child rendered');
+  return <button onClick={onClick}>Click me</button>;
+});
+```
+
+## Code Splitting and Lazy Loading
+
+Reduce initial bundle size with dynamic imports:
+
+```jsx
+import { lazy, Suspense } from 'react';
+
+const HeavyComponent = lazy(() => import('./HeavyComponent'));
+const Dashboard = lazy(() => import('./Dashboard'));
+
+function App() {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/heavy" element={<HeavyComponent />} />
+      </Routes>
+    </Suspense>
+  );
+}
+```
+
+## Virtual Scrolling for Large Lists
+
+Use react-window for efficient list rendering:
+
+```jsx
+import { FixedSizeList } from 'react-window';
+
+function VirtualizedList({ items }) {
+  const Row = ({ index, style }) => (
+    <div style={style} className="p-4 border-b">
+      {items[index].name}
+    </div>
+  );
+
+  return (
+    <FixedSizeList
+      height={600}
+      itemCount={items.length}
+      itemSize={60}
+      width="100%"
+    >
+      {Row}
+    </FixedSizeList>
+  );
+}
+```
+
+## Optimizing Context
+
+Split context to minimize re-renders:
+
+```jsx
+// ❌ Bad: Single context causes unnecessary re-renders
+const AppContext = createContext({
+  user: null,
+  theme: 'light',
+  notifications: [],
+});
+
+// ✅ Good: Separate contexts
+const UserContext = createContext(null);
+const ThemeContext = createContext('light');
+const NotificationContext = createContext([]);
+
+// Components only subscribe to what they need
+function UserProfile() {
+  const user = useContext(UserContext); // Only re-renders when user changes
+  return <div>{user.name}</div>;
+}
+```
+
+## State Colocation
+
+Keep state as close to where it's used:
+
+```jsx
+// ❌ Bad: Lifting state unnecessarily
+function Parent() {
+  const [inputValue, setInputValue] = useState('');
+
+  return (
+    <>
+      <ChildA value={inputValue} onChange={setInputValue} />
+      <ChildB /> {/* Re-renders when inputValue changes */}
+    </>
+  );
+}
+
+// ✅ Good: State colocation
+function Parent() {
+  return (
+    <>
+      <ChildA /> {/* State stays here */}
+      <ChildB /> {/* Doesn't re-render */}
+    </>
+  );
+}
+```
+
+## Optimizing Images
+
+Use Next.js Image component for automatic optimization:
+
+```jsx
+import Image from 'next/image';
+
+function ProfileImage({ src, alt }) {
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      width={200}
+      height={200}
+      placeholder="blur"
+      loading="lazy"
+    />
+  );
+}
+```
+
+## Profiling and Measurement
+
+Use React DevTools Profiler to identify performance issues:
+
+```jsx
+import { Profiler } from 'react';
+
+function onRenderCallback(
+  id, phase, actualDuration, baseDuration,
+  startTime, commitTime, interactions
+) {
+  console.log(`${id} ${phase} took ${actualDuration}ms`);
+}
+
+function App() {
+  return (
+    <Profiler id="App" onRender={onRenderCallback}>
+      <Navigation />
+      <MainContent />
+    </Profiler>
+  );
+}
+```
+
+## Key Takeaways
+
+1. **Profile first**: Measure before optimizing
+2. **Memoize judiciously**: Don't over-optimize
+3. **Code split strategically**: Split by routes and heavy components
+4. **Virtualize large lists**: Use react-window for 100+ items
+5. **Colocate state**: Keep state close to usage
+6. **Split context**: Reduce re-render scope
+
+## Conclusion
+
+React performance optimization is about understanding when and why components re-render. Apply these techniques thoughtfully based on actual performance measurements, not assumptions.
+
+Remember: premature optimization is the root of all evil. Always measure first!

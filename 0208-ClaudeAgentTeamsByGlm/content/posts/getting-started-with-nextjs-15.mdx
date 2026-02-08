@@ -1,0 +1,110 @@
+---
+title: "Getting Started with Next.js 15: A Complete Guide"
+description: "Learn how to build modern web applications with Next.js 15, featuring the latest App Router, Server Components, and more."
+date: "2025-01-15"
+author: "Sarah Chen"
+authorImage: "/images/authors/sarah-chen.jpg"
+tags: ["Next.js", "React", "Web Development", "Tutorial"]
+category: "React"
+readTime: 8
+published: true
+---
+
+# Getting Started with Next.js 15
+
+Next.js 15 brings exciting new features and improvements that make building web applications faster and more enjoyable. In this guide, we'll explore the key features and walk through building your first Next.js 15 application.
+
+## What's New in Next.js 15
+
+Next.js 15 introduces several game-changing features:
+
+- **Improved App Router**: Better performance and developer experience
+- **Enhanced Server Actions**: More seamless server-side mutations
+- **Partial Prerendering**: Hybrid static and dynamic rendering
+- **Turbopack**: Faster builds and hot reload in development
+
+## Setting Up Your Project
+
+To create a new Next.js 15 project, use the following command:
+
+```bash
+npx create-next-app@latest my-app
+```
+
+During setup, you'll be asked about:
+- TypeScript support
+- ESLint configuration
+- Tailwind CSS integration
+- App Router usage
+
+## Understanding the App Router
+
+The App Router is built on React Server Components, enabling:
+
+- Automatic code splitting
+- Streaming and suspense
+- Built-in layouts and loading states
+- Improved data fetching patterns
+
+### Creating Your First Route
+
+Create a new file in the `app` directory:
+
+```tsx
+// app/about/page.tsx
+export default function AboutPage() {
+  return (
+    <main>
+      <h1>About Us</h1>
+      <p>Welcome to our about page!</p>
+    </main>
+  );
+}
+```
+
+## Data Fetching in Next.js 15
+
+Server Components allow direct async/await for data fetching:
+
+```tsx
+async function BlogPosts() {
+  const posts = await fetch('https://api.example.com/posts').then(r => r.json());
+
+  return (
+    <ul>
+      {posts.map((post) => (
+        <li key={post.id}>{post.title}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+## Styling with Tailwind CSS v4
+
+Next.js 15 pairs beautifully with Tailwind CSS v4 for rapid UI development:
+
+```tsx
+export default function Card() {
+  return (
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <h2 className="text-xl font-bold mb-2">Card Title</h2>
+      <p className="text-gray-600">Card content goes here.</p>
+    </div>
+  );
+}
+```
+
+## Deployment
+
+Deploy your Next.js 15 application to Vercel with a single command:
+
+```bash
+vercel deploy
+```
+
+## Conclusion
+
+Next.js 15 provides everything you need to build modern, performant web applications. With its powerful features and excellent developer experience, it's the perfect choice for your next project.
+
+Happy coding!

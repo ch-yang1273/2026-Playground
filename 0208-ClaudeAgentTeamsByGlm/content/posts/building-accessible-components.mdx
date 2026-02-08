@@ -1,0 +1,141 @@
+---
+title: "Building Accessible React Components in 2025"
+description: "A comprehensive guide to creating React components that are usable by everyone, following WCAG 2.2 standards."
+date: "2025-01-20"
+author: "Marcus Johnson"
+authorImage: "/images/authors/marcus-johnson.jpg"
+tags: ["Accessibility", "React", "WCAG", "UI/UX"]
+category: "Accessibility"
+readTime: 6
+published: true
+---
+
+# Building Accessible React Components in 2025
+
+Accessibility isn't just a nice-to-have—it's essential. In this guide, we'll explore how to build React components that work for everyone, following the latest WCAG 2.2 guidelines.
+
+## Why Accessibility Matters
+
+- **Inclusive Design**: 15% of the world population experiences some form of disability
+- **Legal Compliance**: Many countries have accessibility requirements
+- **Better UX**: Accessible sites are better for everyone
+- **SEO Benefits**: Search engines favor accessible content
+
+## Core Principles (POUR)
+
+The WCAG guidelines are built on four principles:
+
+1. **Perceivable**: Information must be presentable in ways users can perceive
+2. **Operable**: Interface components must be operable
+3. **Understandable**: Information and operation must be understandable
+4. **Robust**: Content must be robust enough to be interpreted reliably
+
+## Semantic HTML: The Foundation
+
+Always use appropriate HTML elements:
+
+```jsx
+// ❌ Bad: Using div for buttons
+<div onClick={handleClick}>Click me</div>
+
+// ✅ Good: Using button element
+<button onClick={handleClick}>Click me</button>
+```
+
+## ARIA Attributes
+
+ARIA (Accessible Rich Internet Applications) attributes help when HTML isn't enough:
+
+```jsx
+function ExpandableButton({ isExpanded, children, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      aria-expanded={isExpanded}
+      aria-controls="content-panel"
+    >
+      {children}
+      <span className="icon" aria-hidden="true">▶</span>
+    </button>
+  );
+}
+```
+
+## Keyboard Navigation
+
+Ensure all interactive elements are keyboard accessible:
+
+```jsx
+function Dropdown({ items }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setIsOpen(false);
+      if (e.key === 'ArrowDown') {
+        // Focus next item
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
+
+  // ... rest of component
+}
+```
+
+## Focus Management
+
+Manage focus properly for dynamic content:
+
+```jsx
+function Modal({ isOpen, onClose }) {
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    if (isOpen && modalRef.current) {
+      modalRef.current.focus();
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div
+      ref={modalRef}
+      role="dialog"
+      aria-modal="true"
+      tabIndex={-1}
+    >
+      {/* Modal content */}
+    </div>
+  );
+}
+```
+
+## Testing Your Components
+
+Use these tools to test accessibility:
+
+1. **axe DevTools**: Browser extension for quick audits
+2. **WAVE**: Visual feedback on accessibility issues
+3. **React Testing Library**: Includes accessibility queries
+4. **Screen Readers**: Test with NVDA (Windows) or VoiceOver (Mac)
+
+## Common Mistakes to Avoid
+
+- Poor color contrast (use at least 4.5:1 for text)
+- Missing alt text for images
+- Form labels not properly associated
+- Keyboard traps in modals
+- No focus indicators
+
+## Conclusion
+
+Building accessible components requires intentional design and testing. By following these guidelines, you'll create applications that are usable by everyone.
+
+Remember: accessibility is a journey, not a destination. Start today and continuously improve!

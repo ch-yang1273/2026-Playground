@@ -1,0 +1,217 @@
+---
+title: "Modern CSS Techniques You Should Know in 2025"
+description: "Explore the latest CSS features and techniques that are changing how we build user interfaces."
+date: "2025-02-05"
+author: "Lisa Wang"
+tags: ["CSS", "Web Development", "Frontend", "Design"]
+category: "CSS"
+readTime: 7
+published: true
+---
+
+# Modern CSS Techniques You Should Know in 2025
+
+CSS has evolved significantly in recent years. Let's explore the modern features that make styling easier and more powerful.
+
+## CSS Container Queries
+
+Style elements based on their container size, not the viewport:
+
+```css
+.card-container {
+  container-type: inline-size;
+}
+
+.card {
+  display: grid;
+  gap: 1rem;
+}
+
+/* When container is wider than 400px */
+@container (min-width: 400px) {
+  .card {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+```
+
+## CSS Nesting
+
+Write nested styles like preprocessors, but with native CSS:
+
+```css
+.card {
+  padding: 1rem;
+  background: white;
+
+  &__title {
+    font-size: 1.5rem;
+    color: #333;
+  }
+
+  &__content {
+    margin-top: 1rem;
+
+    p {
+      line-height: 1.6;
+    }
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+```
+
+## CSS Grid Subgrid
+
+Nested grids can align with parent grid columns:
+
+```css
+.parent-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.child-grid {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: subgrid; /* Inherits parent's columns */
+}
+```
+
+## :has() Selector
+
+Select elements based on their descendants:
+
+```css
+/* Style card if it contains an image */
+.card:has(img) {
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Style form if input is invalid */
+.form-group:has(input:invalid) {
+  border-color: red;
+}
+
+/* Style section if it has no children */
+section:has(> :empty) {
+  display: none;
+}
+```
+
+## Custom Properties (CSS Variables)
+
+Create themeable, dynamic styles:
+
+```css
+:root {
+  --primary-color: oklch(0.7 0.15 250);
+  --spacing-unit: 0.5rem;
+  --border-radius: 0.5rem;
+}
+
+.button {
+  background: var(--primary-color);
+  padding: calc(var(--spacing-unit) * 2);
+  border-radius: var(--border-radius);
+}
+
+/* Dark mode override */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary-color: oklch(0.6 0.2 250);
+  }
+}
+```
+
+## Cascade Layers
+
+Manage specificity and CSS source order:
+
+```css
+@layer reset, base, components, utilities;
+
+/* Reset layer - lowest specificity */
+@layer reset {
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+}
+
+/* Base layer */
+@layer base {
+  body { font-family: system-ui; line-height: 1.5; }
+}
+
+/* Components layer */
+@layer components {
+  .button { /* ... */ }
+  .card { /* ... */ }
+}
+
+/* Utilities layer - highest specificity */
+@layer utilities {
+  .text-center { text-align: center; }
+}
+```
+
+## CSS Trigonometry
+
+Built-in math functions without JavaScript:
+
+```css
+.circle {
+  /* Use CSS variables for dynamic values */
+  --size: 100px;
+  --angle: 45deg;
+
+  width: var(--size);
+  height: var(--size);
+  transform: rotate(var(--angle));
+  offset-path: path('M10 80 Q 50 10 90 80');
+  offset-distance: calc(sin(var(--angle)) * 100%);
+}
+```
+
+## View Transitions API
+
+Smooth animations between page views:
+
+```css
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.5s;
+}
+
+@keyframes slide-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+::view-transition-new(root) {
+  animation-name: slide-in;
+}
+```
+
+## Modern Color Functions
+
+Better color manipulation:
+
+```css
+.button {
+  /* Adjust lightness */
+  background: oklch(from var(--primary) calc(l + 10%) c h);
+
+  /* Create color variations */
+  border-color: color-mix(in srgb, var(--primary) 50%, transparent);
+}
+```
+
+## Conclusion
+
+CSS has become a powerful, capable styling language. These modern features allow us to build complex UIs with less code and better maintainability.
+
+Stay updated with the latest CSS features—they often provide simpler solutions to problems that previously required JavaScript or build tools!
