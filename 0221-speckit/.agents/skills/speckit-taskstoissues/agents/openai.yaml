@@ -1,0 +1,3 @@
+interface:
+  display_name: "Speckit TasksToIssues"
+  short_description: "Convert tasks to GitHub issues"

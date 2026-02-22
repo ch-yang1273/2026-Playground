@@ -1,0 +1,3 @@
+interface:
+  display_name: "Speckit Plan"
+  short_description: "Build implementation plan"

@@ -1,0 +1,3 @@
+interface:
+  display_name: "Speckit Checklist"
+  short_description: "Create requirement checklist"

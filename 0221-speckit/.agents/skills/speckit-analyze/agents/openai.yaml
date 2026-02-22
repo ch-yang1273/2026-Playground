@@ -1,0 +1,3 @@
+interface:
+  display_name: "Speckit Analyze"
+  short_description: "Analyze artifact consistency"

@@ -1,0 +1,3 @@
+interface:
+  display_name: "Speckit Specify"
+  short_description: "Create feature spec"
